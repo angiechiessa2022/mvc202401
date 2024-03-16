@@ -1,0 +1,101 @@
+<?php
+
+// Datos de conexión a la base de datos
+$servername = "localhost";
+$username = "usuario";
+$password = "contraseña";
+$database = "basedatos";
+
+// Nombre de la tabla para la que se generarán los archivos
+$tabla = "nombre_tabla";
+
+// Conexión a la base de datos
+$conn = new mysqli($servername, $username, $password, $database);
+
+// Verificar conexión
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
+}
+
+// Obtener información de la tabla
+$query = "DESCRIBE $tabla";
+$result = $conn->query($query);
+
+// Array para almacenar los nombres de los campos
+$campos = array();
+
+// Obtener los nombres de los campos de la tabla
+while ($row = $result->fetch_assoc()) {
+    $campos[] = $row['Field'];
+}
+
+// Crear controlador de lista
+$controladorLista = fopen("$tabla" . "_list_controller.php", "w");
+fwrite($controladorLista, "<?php\n");
+// Escribir código del controlador de lista aquí
+// Ejemplo:
+fwrite($controladorLista, "// Controlador de lista generado automáticamente para la tabla $tabla\n");
+fwrite($controladorLista, "?>");
+fclose($controladorLista);
+
+// Crear controlador de formulario
+$controladorFormulario = fopen("$tabla" . "_form_controller.php", "w");
+fwrite($controladorFormulario, "<?php\n");
+// Escribir código del controlador de formulario aquí
+// Ejemplo:
+fwrite($controladorFormulario, "// Controlador de formulario generado automáticamente para la tabla $tabla\n");
+fwrite($controladorFormulario, "?>");
+fclose($controladorFormulario);
+
+// Crear plantilla de lista
+$plantillaLista = fopen("$tabla" . "_list_template.php", "w");
+fwrite($plantillaLista, "<!DOCTYPE html>\n");
+// Escribir código de la plantilla de lista aquí
+// Ejemplo:
+fwrite($plantillaLista, "<html>\n");
+fwrite($plantillaLista, "<head>\n");
+fwrite($plantillaLista, "<title>Lista de $tabla</title>\n");
+fwrite($plantillaLista, "</head>\n");
+fwrite($plantillaLista, "<body>\n");
+fwrite($plantillaLista, "<h1>Lista de $tabla</h1>\n");
+fwrite($plantillaLista, "<ul>\n");
+foreach ($campos as $campo) {
+    fwrite($plantillaLista, "<li>$campo</li>\n");
+}
+fwrite($plantillaLista, "</ul>\n");
+fwrite($plantillaLista, "</body>\n");
+fwrite($plantillaLista, "</html>\n");
+fclose($plantillaLista);
+
+// Crear plantilla de formulario
+$plantillaFormulario = fopen("$tabla" . "_form_template.php", "w");
+fwrite($plantillaFormulario, "<!DOCTYPE html>\n");
+// Escribir código de la plantilla de formulario aquí
+// Ejemplo:
+fwrite($plantillaFormulario, "<html>\n");
+fwrite($plantillaFormulario, "<head>\n");
+fwrite($plantillaFormulario, "<title>Formulario de $tabla</title>\n");
+fwrite($plantillaFormulario, "</head>\n");
+fwrite($plantillaFormulario, "<body>\n");
+fwrite($plantillaFormulario, "<h1>Formulario de $tabla</h1>\n");
+foreach ($campos as $campo) {
+    fwrite($plantillaFormulario, "<input type='text' name='$campo'><br>\n");
+}
+fwrite($plantillaFormulario, "</body>\n");
+fwrite($plantillaFormulario, "</html>\n");
+fclose($plantillaFormulario);
+
+// Crear modelo de datos
+$modeloDatos = fopen("$tabla" . "_model.php", "w");
+fwrite($modeloDatos, "<?php\n");
+// Escribir código del modelo de datos aquí
+// Ejemplo:
+fwrite($modeloDatos, "// Modelo de datos generado automáticamente para la tabla $tabla\n");
+fwrite($modeloDatos, "?>");
+fclose($modeloDatos);
+
+// Cerrar conexión a la base de datos
+$conn->close();
+
+echo "Archivos generados exitosamente.";
+?>
